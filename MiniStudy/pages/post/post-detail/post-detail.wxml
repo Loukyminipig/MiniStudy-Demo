@@ -11,3 +11,19 @@
   </view>
   <view class="detail">{{post.detail}}</view>
 </view>
+<view class="tool">
+  <view class="tool-item" catchtap="onUpTap" data-post-id="{{post.postId}}">
+    <image wx:if="{{post.upStatus}}" src="/images/icon/liked.jpeg"></image>
+    <image wx:else src="/images/icon/like.jpeg"></image>
+    <text>{{post.upNum}}</text>
+  </view>
+  <view class="tool-item" catchtap="onCommentTap" data-post-id="{{post.postId}}">
+    <image src="/images/icon/message.jpg"></image>
+    <text>{{post.commentNum}}</text>
+  </view>
+  <view class="tool-item" catchtap="onCollectionTap" data-post-id="{{post.postId}}">
+    <image wx:if="{{post.collectionStatus}}" src="/images/icon/collected.jpeg"></image>
+    <image wx:else src="/images/icon/collect.jpeg"></image>
+    <text>{{post.collectionNum}}</text>
+  </view>
+</view>

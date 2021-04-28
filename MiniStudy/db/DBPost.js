@@ -26,6 +26,43 @@ class DBPost {
       }
     }
   }
+  collect() {
+    return this.updatePostData('collect');
+  }
+  updatePostData(category) {
+    var itemData = this.getPostItemById();
+    var postData = itemData.data;
+    var allPostData = this.getAllPostData();
+    switch (category) {
+      case 'collect':
+        if (!postData.collectionStatus) {
+          postData.collectionNum++;
+          postData.collectionStatus = true;
+        } else {
+          postData.collectionNum--;
+          postData.collectionStatus = false;
+        }
+        break;
+      case 'up':
+        if (!postData.upStatus) {
+          postData.upNum++;
+          postData.upStatus = true;
+        } else {
+          postData.upNum--;
+          postData.upStatus = false;
+        }
+        break;
+      default:
+        break;
+    }
+    allPostData[itemData.index] = postData;
+    this.execStorageSync(allPostData);
+    return postData;
+  }
+  up() {
+    var data = this.updatePostData('up');
+    return data;
+  }
 }
 
 
