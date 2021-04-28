@@ -1,0 +1,15 @@
+{
+  "pages": [
+    "pages/welcome/welcome",
+    "pages/post/post",
+    "pages/post/post-detail/post-detail"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#ECC0A8",
+    "navigationBarTitleText": "Weixin",
+    "navigationBarTextStyle": "black"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
