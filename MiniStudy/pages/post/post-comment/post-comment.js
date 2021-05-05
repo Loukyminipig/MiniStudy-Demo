@@ -9,7 +9,9 @@ Page({
     useKeyboardFlag: true,
     keyboardInputValue: '',
     sendMoreMsgFlag: false,
-    chooseFiles: []
+    chooseFiles: [],
+    deleteIndex: -1,
+    currentAudio: ''
   },
 
   /**
@@ -99,15 +101,17 @@ Page({
   },
 
   submitComment: function (event) {
+    var imgs = this.data.chooseFiles;
     var newData = {
       username: "青石",
       avatar: "/images/avatar/7.jpg",
       create_time: new Date().getTime() / 1000,
       content: {
-        txt: this.data.keyboardInputValue
+        txt: this.data.keyboardInputValue,
+        img: imgs
       },
     };
-    if (!newData.content.txt) {
+    if (!newData.content.txt && imgs.length == 0) {
       return;
     }
     this.dbPost.newComment(newData);
@@ -133,7 +137,9 @@ Page({
 
   resetAllDefaultStatus: function () {
     this.setData({
-      keyboardInputValue: ''
+      keyboardInputValue: '',
+      chooseFiles: [],
+      sendMoreMsgFlag: false
     })
   },
 
@@ -176,5 +182,94 @@ Page({
         chooseFiles: that.data.chooseFiles
       })
     }, 500)
+  },
+
+  recordStart: function () {
+    var that = this;
+    this.setData({
+      recordingClass: 'recording'
+    });
+
+    this.startTime = new Date();
+    wx.startRecord({
+      success: function (res) {
+        var diff = (that.endTime - that.startTime) / 1000;
+        diff = Math.ceil(diff);
+        that.submitVoiceComment({ url: res.tempFilePath, timeLen: diff });
+      },
+      fail: function (res) {
+        console.log(res)
+      },
+      complete: function (res) {
+        console.log(res);
+      }
+    })
+  },
+
+  recordEnd: function () {
+    this.setData({
+      recordClass: ''
+    });
+    this.endTime = new Date();
+    wx.stopRecord();
+  },
+
+  submitVoiceComment: function (audio) {
+    var newData = {
+      username: '青石',
+      avatar: '/images/avatar/1.jpg',
+      create_time: new Date().getTime() / 1000,
+      content: {
+        txt: '',
+        img: [],
+        audio: audio
+      }
+    };
+
+    this.dbPost.newComment(newData);
+    this.showCommitSuccessToast();
+    this.bindCommentData();
+  },
+
+  playAudio: function (event) {
+    var url = event.currentTarget.dataset.url;
+    var that = this;
+    console.log(url);
+    console.log(this.data.currentAudio);
+    if (url == this.data.currentAudio) {
+      wx.pauseVoice({
+        success: function(res){
+          console.log('pauseVoice-success');
+          console.log(res);
+        },
+        fail:function(res){
+          console.log('pauseVoice-fail');
+          console.log(res);
+        },
+        complete:function(res){
+          console.log('pauseVoice-complete');
+          console.log(res);
+        }
+      })
+      this.data.currentAudio = '';
+    } else {
+      this.data.currentAudio = url;
+      wx.playVoice({
+        filePath: url,
+        success: function(res){
+          console.log('playVoice-success');
+          console.log(res);
+        },
+        fail:function(res){
+          console.log('playVoice-fail');
+          console.log(res);
+        },
+        complete:function(res){
+          that.data.currentAudio = '';
+          console.log('playVoice-complete');
+          console.log(res);
+        }
+      })
+    }
   }
 })
