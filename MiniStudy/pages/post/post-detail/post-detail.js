@@ -14,8 +14,8 @@ Page({
   onLoad: function (options) {
     var postId = options.id;
     this.dbPost = new DBPost(postId);
-    // console.log(this.dbPost)
     this.postData = this.dbPost.getPostItemById().data;
+    console.log(this.postData);
     this.setData({
       post: this.postData
     });

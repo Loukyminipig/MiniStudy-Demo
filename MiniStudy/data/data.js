@@ -51,7 +51,7 @@ var postList = [{
       }
     }, {
       username: '青水',
-      avatar: '/images/avatar/2.jpg',
+      avatar: '/images/avatar/2.png',
       create_time: '1481018319',
       content: {
         txt: '宝可梦已经有手游啦',

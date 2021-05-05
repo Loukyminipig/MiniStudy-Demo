@@ -1,4 +1,5 @@
 // pages/post/post-comment/post-comment.js
+import { DBPost } from '../../../db/DBPost.js';
 Page({
 
   /**
@@ -12,7 +13,14 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    var postId = options.id;
+    this.dbPost = new DBPost(postId);
+    // console.log("post comment onload id=" + postId);
+    var comments = this.dbPost.getCommentData();
+    // console.log(comments);
+    this.setData({
+      comments: comments
+    });
   },
 
   /**
@@ -62,5 +70,16 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+
+  previewImg: function (event) {
+    var commentIdx = event.currentTarget.dataset.commentIdx;
+    var imgIdx = event.currentTarget.dataset.imgIdx;
+    var imgs = this.data.comments[commentIdx].content.img;
+    console.log(event.currentTarget);
+    wx.previewImage({
+      current: imgs[imgIdx],
+      urls: imgs,
+    })
   }
 })
