@@ -242,6 +242,17 @@
   }
 }
 
+.send-more-result-main image{
+  height: 100%;
+  width: 100%;
+}
+
+.send-more-result-main .remove-icon{
+  position: absolute;
+  right: 5rpx;
+  top: 5rpx;
+}
+
 .send-more-result-main .file-box .img-box {
   height: 100%;
   width: 100%;

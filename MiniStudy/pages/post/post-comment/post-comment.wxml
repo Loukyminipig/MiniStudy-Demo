@@ -36,17 +36,45 @@
   <view class="input-box">
     <view class="send-msg-box">
       <view hidden="{{useKeyboardFlag}}" class="input-item">
-        <image src="/images/icon/wx_app_keyboard.jpg" class="comment-icon keyboard-icon" catchtap="switchInpuType">
+        <image src="/images/icon/wx_app_keyboard.jpg" class="comment-icon keyboard-icon" catchtap="switchInputType">
         </image>
         <input class="input speak-input{{recordingClass}}" value="按住 说话" disabled="disabled"
           catchtouchstart="recordStart" catchtouchend="recordEnd" />
       </view>
       <view hidden="{{!useKeyboardFlag}}" class="input-item">
         <image class="comment-icon speak-icon" src="/images/icon/wx_app_speak.jpg" catchtap="switchInputType"></image>
-        <input class="input keyboard-input" value="{{keyboardInputValue}}" bindinput="bindCommentInput" placeholder="说点什么吧......"/>
+        <input class="input keyboard-input" value="{{keyboardInputValue}}" bindconfirm="submitComment"
+          bindinput="bindCommentInput" placeholder="说点什么吧......" />
       </view>
-      <image class="comment-icon add-icon" src="/images/icon/wx_app_add.jpeg" catchtap="sendMoreM"></image>
+      <image class="comment-icon add-icon" src="/images/icon/wx_app_add.jpeg" catchtap="sendMoreMsg"></image>
       <view class="submit-bnt" catchtap="submitComment">发送</view>
+    </view>
+    <view class="send-more-box" hidden="{{!sendMoreMsgFlag}}">
+      <view class="send-more-bnts-main">
+        <view class="more-bnt-item" catchtap="chooseImage" data-category="album">
+          <view class="more-bnt-main">
+            <image src="/images/icon/wx_app_upload.jpg"></image>
+          </view>
+          <text>照片</text>
+        </view>
+        <view class="more-bnt-item" catchtap="chooseImage" data-category="camera">
+          <view class="more-bnt-main">
+            <image src="/images/icon/wx_app_camera.jpg"></image>
+          </view>
+          <text>拍照</text>
+        </view>
+      </view>
+      <view class="send-more-result-main" hidden="{{chooseFiles.length==0}}">
+        <block wx:for="{{chooseFiles}}" wx:for-index="idx">
+          <view class="file-box {{deleteIndex==idx?'deleting':''}}">
+            <view class="img-box">
+              <image src="{{item}}" mode="aspectFill"></image>
+              <icon class="remove-icon" type="cancel" size="23" color="#B2B2B2" catchtap="deleteImage"
+                data-idx="{{idx}}"></icon>
+            </view>
+          </view>
+        </block>
+      </view>
     </view>
   </view>
 </view>
