@@ -238,15 +238,15 @@ Page({
     console.log(this.data.currentAudio);
     if (url == this.data.currentAudio) {
       wx.pauseVoice({
-        success: function(res){
+        success: function (res) {
           console.log('pauseVoice-success');
           console.log(res);
         },
-        fail:function(res){
+        fail: function (res) {
           console.log('pauseVoice-fail');
           console.log(res);
         },
-        complete:function(res){
+        complete: function (res) {
           console.log('pauseVoice-complete');
           console.log(res);
         }
@@ -256,15 +256,15 @@ Page({
       this.data.currentAudio = url;
       wx.playVoice({
         filePath: url,
-        success: function(res){
+        success: function (res) {
           console.log('playVoice-success');
           console.log(res);
         },
-        fail:function(res){
+        fail: function (res) {
           console.log('playVoice-fail');
           console.log(res);
         },
-        complete:function(res){
+        complete: function (res) {
           that.data.currentAudio = '';
           console.log('playVoice-complete');
           console.log(res);

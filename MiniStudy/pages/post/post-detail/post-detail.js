@@ -1,11 +1,12 @@
 import { DBPost } from '../../../db/DBPost.js';
+var app = getApp();
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    isPlayingMusic: false
   },
 
   /**
@@ -20,6 +21,8 @@ Page({
       post: this.postData
     });
     this.addReadingTimes();
+    this.setMusicMonitor();
+    this.initMusicStatus();
   },
 
   /**
@@ -47,7 +50,24 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    console.log('post-detail onUnload');
+    this.setData({
+      isPlayingMusic: false
+    })
+    wx.stopBackgroundAudio({
+      success: function (res) {
+        console.log('stopBackgroundAudio-success');
+        console.log(res);
+      },
+      fail: function (res) {
+        console.log('stopBackgroundAudio-fail');
+        console.log(res);
+      },
+      complete: function (res) {
+        console.log('stopBackgroundAudio-complete');
+        console.log(res);
+      }
+    })
   },
 
   /**
@@ -100,7 +120,94 @@ Page({
     })
   },
 
-  addReadingTimes:function(){
+  addReadingTimes: function () {
     this.dbPost.addReadingTimes();
+  },
+
+  onMusicTap: function (event) {
+    if (this.data.isPlayingMusic) {
+      wx.pauseBackgroundAudio({
+        success: function (res) {
+          console.log('pauseBackgroundAudio-success');
+          console.log(res);
+        },
+        fail: function (res) {
+          console.log('pauseBackgroundAudio-fail');
+          console.log(res);
+        },
+        complete: function (res) {
+          console.log('pauseBackgroundAudio-complete');
+          console.log(res);
+        }
+      });
+      this.setData({
+        isPlayingMusic: false
+      });
+      app.globleData.g_isPlayingMusic = false;
+    } else {
+      wx.playBackgroundAudio({
+        dataUrl: this.postData.music.url,
+        title: this.postData.music.title,
+        coverImgUrl: this.postData.music.coverImg,
+        success: function (res) {
+          console.log('playBackgroundAudio-success');
+          console.log(res);
+        },
+        fail: function (res) {
+          console.log('playBackgroundAudio-fail');
+          console.log(res);
+        },
+        complete: function (res) {
+          console.log('playBackgroundAudio-complete');
+          console.log(res);
+        }
+      });
+      this.setData({
+        isPlayingMusic: true
+      });
+      app.globleData.g_isPlayingMusic = true;
+      app.globleData.g_currentMusicPostId = this.postData.postId;
+    }
+  },
+
+  setMusicMonitor: function () {
+    var that = this;
+    wx.onBackgroundAudioStop(function () {
+      this.setData({
+        isPlayingMusic: false
+      })
+      app.globleData.g_isPlayingMusic = false;
+    });
+
+    wx.onBackgroundAudioPlay(function () {
+      if (app.globleData.g_currentMusicPostId == this.postData.postId) {
+        this.setData({
+          isPlayingMusic: true
+        })
+      }
+      app.globleData.g_isPlayingMusic = true;
+    });
+
+    wx.onBackgroundAudioPause(function () {
+      if (app.globleData.g_currentMusicPostId == this.postData.postId) {
+        this.setData({
+          isPlayingMusic: false
+        })
+      }
+      app.globleData.g_isPlayingMusic = false;
+    })
+  },
+
+  initMusicStatus: function () {
+    var currentPostId = this.postData.postId;
+    if (app.globleData.g_isPlayingMusic && app.globleData.g_currentMusicPostId == currentPostId) {
+      this.setData({
+        isPlayingMusic: true
+      });
+    } else {
+      this.setData({
+        isPlayingMusic: false
+      })
+    }
   }
 })

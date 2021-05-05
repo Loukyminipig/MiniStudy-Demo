@@ -9,5 +9,8 @@ App({
     //   wx.setStorageSync('postList', dataObj.postList);
     // }
   },
-
+  globleData: {
+    g_isPlayingMusic: false,
+    g_currentMusicPostId: null
+  }
 })
