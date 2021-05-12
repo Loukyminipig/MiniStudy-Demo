@@ -23,6 +23,7 @@ Page({
     this.addReadingTimes();
     this.setMusicMonitor();
     this.initMusicStatus();
+    this.setAniation();
   },
 
   /**
@@ -200,7 +201,8 @@ Page({
 
   initMusicStatus: function () {
     var currentPostId = this.postData.postId;
-    if (app.globleData.g_isPlayingMusic && app.globleData.g_currentMusicPostId == currentPostId) {
+    if (app.globleData.g_isPlayingMusic &&
+      app.globleData.g_currentMusicPostId == currentPostId) {
       this.setData({
         isPlayingMusic: true
       });
@@ -209,5 +211,39 @@ Page({
         isPlayingMusic: false
       })
     }
+  },
+
+  onShareAppMessage: function () {
+    return {
+      title: this.postData.title,
+      desc: this.postData.content,
+      path: '/pages/post/post-detail/post-detail'
+    }
+  },
+
+  setAniation: function () {
+    var animationUp = wx.createAnimation({
+      timingFunction: 'ease-in-out'
+    })
+    this.animationUp = animationUp;
+  },
+
+  onUpTap: function (event) {
+    var newData = this.dbPost.up();
+    this.setData({
+      'post.upStatus': newData.upStatus,
+      'post.upNum': newData.upNum
+    });
+
+    this.animationUp.scale(2,2).rotate(45).step();
+    this.setData({
+      animationUp: this.animationUp.export()
+    })
+    setTimeout(function () {
+      this.animationUp.scale(1,1).rotate(0).step();
+      this.setData({
+        animationUp: this.animationUp.export()
+      })
+    }.bind(this), 300);
   }
 })
